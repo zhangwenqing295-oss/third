@@ -1,0 +1,57 @@
+project: runs/srda
+name: exp
+
+train:
+  epochs: 100
+  imgsz: 640
+  batch: 8
+  workers: 8
+  device: "0"
+  lr0: 0.01
+  lrf: 0.01
+  optimizer: SGD
+  weight_decay: 0.0005
+  close_mosaic: 10
+  amp: false
+  pretrained: false
+
+data:
+  yaml: your_dataset.yaml
+
+loss:
+  lambda_sr: 0.0
+  lambda_align: 0.1
+
+model:
+  fuse_layer: 15
+  sr_feature_stage: deep
+  freeze_sr: true
+
+  sr:
+    name: swinir
+    weights: weights/swinir_x2.pth
+    kwargs:
+      upscale: 2
+      in_chans: 3
+      img_size: 64
+      window_size: 8
+      img_range: 1.0
+      depths: [6, 6, 6, 6, 6, 6]
+      embed_dim: 180
+      num_heads: [6, 6, 6, 6, 6, 6]
+      mlp_ratio: 2
+      upsampler: pixelshuffle
+      resi_connection: 1conv
+
+  det:
+    name: yolov8
+    weights: weights/yolov8n.pt
+    kwargs: {}
+
+  fusion:
+    name: default_adapter
+    kwargs: {}
+
+vendor:
+  prefer_local_ultralytics: true
+  prefer_local_kair: true

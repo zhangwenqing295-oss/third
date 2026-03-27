@@ -1,0 +1,46 @@
+project: runs/custom_method
+name: exp_custom
+
+train:
+  epochs: 100
+  imgsz: 640
+  batch: 8
+  workers: 8
+  device: "0"
+  lr0: 0.01
+  lrf: 0.01
+  optimizer: SGD
+  weight_decay: 0.0005
+  close_mosaic: 10
+  amp: false
+  pretrained: false
+
+data:
+  yaml: your_dataset.yaml
+
+loss:
+  lambda_sr: 0.0
+  lambda_align: 0.1
+
+model:
+  fuse_layer: 15
+  sr_feature_stage: deep
+  freeze_sr: true
+
+  sr:
+    name: my_sr
+    weights: ""
+    kwargs: {}
+
+  det:
+    name: yolov8
+    weights: weights/yolov8n.pt
+    kwargs: {}
+
+  fusion:
+    name: my_fusion
+    kwargs: {}
+
+vendor:
+  prefer_local_ultralytics: true
+  prefer_local_kair: true
